@@ -8,64 +8,63 @@ function App() {
   const [users, setUsers] = useState([])
 
   useEffect(() => {
-    fetchUsers()
+    fetch_users()
   }, [])
 
-  async function fetchUsers() {
+  async function fetch_users() {
     const { data, error } = await supabase.from('users').select('*')
     if (!error) setUsers(data)
   }
 
-  function handleChange(e) {
+  function handle_change(e) {
     setUser(prev => ({
       ...prev,
       [e.target.name]: e.target.value
     }))
   }
 
-  function handleEditChange(e) {
+  function handle_edit_change(e) {
     setEditUser(prev => ({
       ...prev,
       [e.target.name]: e.target.value
     }))
   }
 
-  async function createUser(e) {
+  async function create_user(e) {
     e.preventDefault()
     await supabase.from('users').insert({ name: user.name, age: user.age })
     setUser({ name: '', age: '' })
-    fetchUsers()
+    fetch_users()
   }
 
-  async function deleteUser(id) {
+  async function delete_user(id) {
     await supabase.from('users').delete().eq('id', id)
-    fetchUsers()
+    fetch_users()
   }
 
-  async function updateUser(e) {
+  async function update_user(e) {
     e.preventDefault()
     await supabase.from('users').update({
       name: editUser.name,
       age: editUser.age
     }).eq('id', editUser.id)
     setEditUser({ id: null, name: '', age: '' })
-    fetchUsers()
+    fetch_users()
   }
 
-  function startEdit(user) {
+  function start_edit(user) {
     setEditUser(user)
   }
 
   return (
     <>
-      {/* Formulário de Criação */}
-      <form onSubmit={createUser}>
+      <form onSubmit={create_user}>
         <input
           type="text"
           name="name"
           placeholder="Name"
           value={user.name}
-          onChange={handleChange}
+          onChange={handle_change}
           autoComplete="off"
         />
         <input
@@ -73,21 +72,20 @@ function App() {
           name="age"
           placeholder="Age"
           value={user.age}
-          onChange={handleChange}
+          onChange={handle_change}
           autoComplete="off"
         />
         <button type="submit">Add User</button>
       </form>
 
-      {/* Formulário de Edição */}
       {editUser.id && (
-        <form onSubmit={updateUser}>
+        <form onSubmit={update_user}>
           <input
             type="text"
             name="name"
             placeholder="Name"
             value={editUser.name}
-            onChange={handleEditChange}
+            onChange={handle_edit_change}
             autoComplete="off"
           />
           <input
@@ -95,7 +93,7 @@ function App() {
             name="age"
             placeholder="Age"
             value={editUser.age}
-            onChange={handleEditChange}
+            onChange={handle_edit_change}
             autoComplete="off"
           />
           <button type="submit">Save Changes</button>
@@ -117,9 +115,9 @@ function App() {
               <td>{u.id}</td>
               <td>{u.name}</td>
               <td>{u.age}</td>
-              <td>
-                <button onClick={() => deleteUser(u.id)}>Delete</button>
-                <button onClick={() => startEdit(u)}>Edit</button>
+              <td className='options'>
+                <button className='edit' onClick={() => start_edit(u)}>Edit</button>
+                <button className='delete' onClick={() => delete_user(u.id)}>Delete</button>
               </td>
             </tr>
           ))}

@@ -52,14 +52,24 @@ thead, tbody, th, td {
 }
 
 table button {
-  padding: .6rem 2rem;
+  padding: .6rem;
+  width: 40%;
   border: none;
   cursor: pointer;
   border-radius: 8px;
   transition: .4s ease background-color;
 }
+table .options {
+  display: flex;
+  justify-content: space-between;
+}
 
-table button:hover {
+table .delete:hover {
   background-color: red;
+  color: white;
+}
+
+table .edit:hover {
+  background-color: green;
   color: white;
 }
