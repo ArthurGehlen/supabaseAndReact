@@ -3,17 +3,12 @@ import { supabase } from './createClient'
 import './App.css'
 
 function App() {
-  const [user, setUser] = useState({ name: '', age: '' })
-  const [editUser, setEditUser] = useState({ id: null, name: '', age: '' })
+  const [user, setUser] = useState({ name: '', message: '' })
   const [users, setUsers] = useState([])
 
-  useEffect(() => {
-    fetch_users()
-  }, [])
-
   async function fetch_users() {
-    const { data, error } = await supabase.from('users').select('*')
-    if (!error) setUsers(data)
+    const { data } = await supabase.from('users').select('*')
+    setUsers(data)
   }
 
   function handle_change(e) {
@@ -23,106 +18,56 @@ function App() {
     }))
   }
 
-  function handle_edit_change(e) {
-    setEditUser(prev => ({
-      ...prev,
-      [e.target.name]: e.target.value
-    }))
-  }
-
-  async function create_user(e) {
+  async function send_message(e) {
     e.preventDefault()
-    await supabase.from('users').insert({ name: user.name, age: user.age })
-    setUser({ name: '', age: '' })
+
+    if (user.name === '' && user.message === '') {
+      return
+    }
+
+    await supabase.from('users').insert({ name: user.name, message: user.message })
+    setUser({ name: '', message: '' })
     fetch_users()
   }
 
-  async function delete_user(id) {
-    await supabase.from('users').delete().eq('id', id)
+  useEffect(() => {
     fetch_users()
-  }
-
-  async function update_user(e) {
-    e.preventDefault()
-    await supabase.from('users').update({
-      name: editUser.name,
-      age: editUser.age
-    }).eq('id', editUser.id)
-    setEditUser({ id: null, name: '', age: '' })
-    fetch_users()
-  }
-
-  function start_edit(user) {
-    setEditUser(user)
-  }
+  }, [])
 
   return (
     <>
-      <form onSubmit={create_user}>
+      {users.length > 0 &&
+        <main>
+          {users.map((user) => (
+            <div className="card">
+              <p className='username'>
+                <strong>{user.name}</strong>
+              </p>
+              <p>{user.message}</p>
+            </div>
+          ))}
+        </main>
+      }
+
+      <form onSubmit={send_message}>
         <input
           type="text"
           name="name"
-          placeholder="Name"
+          placeholder="Digite seu nome"
           value={user.name}
           onChange={handle_change}
           autoComplete="off"
         />
         <input
-          type="number"
-          name="age"
-          placeholder="Age"
+          type="text"
+          name="message"
+          placeholder="Escreva uma mensagem"
           value={user.age}
           onChange={handle_change}
           autoComplete="off"
         />
-        <button type="submit">Add User</button>
+        <button type="submit">Enviar mensagem</button>
       </form>
-
-      {editUser.id && (
-        <form onSubmit={update_user}>
-          <input
-            type="text"
-            name="name"
-            placeholder="Name"
-            value={editUser.name}
-            onChange={handle_edit_change}
-            autoComplete="off"
-          />
-          <input
-            type="number"
-            name="age"
-            placeholder="Age"
-            value={editUser.age}
-            onChange={handle_edit_change}
-            autoComplete="off"
-          />
-          <button type="submit">Save Changes</button>
-        </form>
-      )}
-      
-      <table border="1px">
-        <thead>
-          <tr>
-            <th>Id</th>
-            <th>Name</th>
-            <th>Age</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {users.map((u) => (
-            <tr key={u.id}>
-              <td>{u.id}</td>
-              <td>{u.name}</td>
-              <td>{u.age}</td>
-              <td className='options'>
-                <button className='edit' onClick={() => start_edit(u)}>Edit</button>
-                <button className='delete' onClick={() => delete_user(u.id)}>Delete</button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
     </>
   )
 }
