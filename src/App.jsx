@@ -21,7 +21,7 @@ function App() {
   async function send_message(e) {
     e.preventDefault()
 
-    if (user.name === '' && user.message === '') {
+    if (user.name === '' || user.message === '') {
       return
     }
 
@@ -57,14 +57,16 @@ function App() {
           value={user.name}
           onChange={handle_change}
           autoComplete="off"
+          maxLength={40}
         />
         <input
           type="text"
           name="message"
-          placeholder="Escreva uma mensagem"
-          value={user.age}
+          placeholder="Escreva uma mensagem (maximo de 200 caracteres)"
+          value={user.message}
           onChange={handle_change}
           autoComplete="off"
+          maxLength={200}
         />
         <button type="submit">Enviar mensagem</button>
       </form>

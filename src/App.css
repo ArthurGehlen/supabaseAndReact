@@ -27,14 +27,15 @@ form button {
   padding: .8rem;
   border-radius: 50px;
   cursor: pointer;
-  border: 1px solid white;
+  border: 1px solid #b1e1e9;
   transition: .4s ease background-color;
+  background-color: #b1e1e9;
 }
 
 form button:hover {
   background-color: transparent;
   color: white;
-  border: 1px solid white;
+  border: 1px solid #96d7eb;
 }
 
 form input::-webkit-inner-spin-button {
@@ -53,11 +54,13 @@ main {
 }
 
 main .card {
-  background-color: #1829be;
+  background-color: #b1e1e9;
   padding: 1rem;
   height: 10rem;
-  width: 10rem;
+  width: 29.3rem;
   border-radius: .8rem;
+  line-break: anywhere;
+  color: #686466;
 }
 
 main .card .username {
@@ -67,5 +70,6 @@ main .card .username {
 @media screen and (max-width: 476px) {
   main {
     justify-content: center;
+    padding: 1rem;
   }
 }
